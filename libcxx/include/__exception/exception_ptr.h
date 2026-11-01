@@ -43,11 +43,11 @@ struct __cxa_exception;
 _LIBCPP_OVERRIDABLE_FUNC_VIS __cxa_exception* __cxa_init_primary_exception(
     void*,
     std::type_info*,
-#    if defined(_WIN32)
-    void(__thiscall*)(void*)) throw();
-#    elif defined(__wasm__)
+#    if defined(__wasm__)
     // In Wasm, a destructor returns its argument
     void* (*)(void*)) throw();
+#    elif defined(_WIN32)
+    void(__thiscall*)(void*)) throw();
 #    else
     void (*)(void*)) throw();
 #    endif
