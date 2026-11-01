@@ -17,7 +17,11 @@
 #ifdef __WASM_EXCEPTIONS__
 
 #include "unwind.h"
+#if __has_include(<threads.h>)
 #include <threads.h>
+#else
+#define thread_local _Thread_local
+#endif
 
 _Unwind_Reason_Code __gxx_personality_wasm0(int version, _Unwind_Action actions,
                                             uint64_t exceptionClass,
