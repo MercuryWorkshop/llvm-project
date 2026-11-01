@@ -45,21 +45,21 @@ __sift_down(_RandomAccessIterator __first,
 
   if _LIBCPP_CONSTEXPR (__assume_both_children) {
     // right-child exists and is greater than left-child
-    __child += __comp(__first[__child], __first[__child + 1]);
-  } else if ((__child + 1) < __len && __comp(__first[__child], __first[__child + 1])) {
+    __child += __comp(*(__first + (__child)), *(__first + (__child + 1)));
+  } else if ((__child + 1) < __len && __comp(*(__first + (__child)), *(__first + (__child + 1)))) {
     // right-child exists and is greater than left-child
     ++__child;
   }
 
   // check if we are in heap-order
-  if (__comp(__first[__child], __first[__start]))
+  if (__comp(*(__first + (__child)), *(__first + (__start))))
     // we are, __start is larger than its largest child
     return;
 
   value_type __top(_Ops::__iter_move(__first + __start));
   do {
     // we are not in heap-order, swap the parent with its largest child
-    __first[__start] = _Ops::__iter_move(__first + __child);
+    *(__first + (__start)) = _Ops::__iter_move(__first + __child);
     __start          = __child;
 
     if ((__len - 2) / 2 < __child)
@@ -69,15 +69,15 @@ __sift_down(_RandomAccessIterator __first,
     __child = 2 * __child + 1;
 
     if _LIBCPP_CONSTEXPR (__assume_both_children) {
-      __child += __comp(__first[__child], __first[__child + 1]);
-    } else if ((__child + 1) < __len && __comp(__first[__child], __first[__child + 1])) {
+      __child += __comp(*(__first + (__child)), *(__first + (__child + 1)));
+    } else if ((__child + 1) < __len && __comp(*(__first + (__child)), *(__first + (__child + 1)))) {
       // right-child exists and is greater than left-child
       ++__child;
     }
 
     // check if we are in heap-order
-  } while (!__comp(__first[__child], __top));
-  __first[__start] = std::move(__top);
+  } while (!__comp(*(__first + (__child)), __top));
+  *(__first + (__start)) = std::move(__top);
 }
 
 template <class _AlgPolicy, class _Compare, class _RandomAccessIterator>
