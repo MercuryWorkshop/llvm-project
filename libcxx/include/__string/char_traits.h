@@ -285,6 +285,29 @@ struct char_traits<char8_t> : __char_traits_base<char8_t, unsigned int, static_c
 
 #endif // _LIBCPP_HAS_CHAR8_T
 
+// char_traits<unsigned char>, which libstdc++ has (its base template) and
+// programs written against it use for byte strings and views
+template <>
+struct char_traits<unsigned char>
+    : __char_traits_base<unsigned char, unsigned int, static_cast<unsigned int>(EOF)> {
+  [[nodiscard]] static _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 int
+  compare(const char_type* __s1, const char_type* __s2, size_t __n) _NOEXCEPT {
+    return std::__constexpr_memcmp(__s1, __s2, __element_count(__n));
+  }
+
+  [[nodiscard]] static _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 size_t length(const char_type* __str) _NOEXCEPT {
+    size_t __i = 0;
+    for (; __str[__i] != 0; ++__i)
+      ;
+    return __i;
+  }
+
+  [[nodiscard]] _LIBCPP_HIDE_FROM_ABI static _LIBCPP_CONSTEXPR_SINCE_CXX17 const char_type*
+  find(const char_type* __s, size_t __n, const char_type& __a) _NOEXCEPT {
+    return std::__constexpr_memchr(__s, __a, __n);
+  }
+};
+
 template <>
 struct char_traits<char16_t> : __char_traits_base<char16_t, uint_least16_t, static_cast<uint_least16_t>(0xFFFF)> {
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI static _LIBCPP_CONSTEXPR_SINCE_CXX17 int
